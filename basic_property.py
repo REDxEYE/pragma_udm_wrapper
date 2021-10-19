@@ -1,4 +1,5 @@
 import json
+from typing import Any
 
 from .wrapper import *
 import ctypes
@@ -42,6 +43,15 @@ class BasicUdmProperty:
         if prop is None:
             raise IndexError(f'UdmProperty "{self.path}" does not have "{item}" property')
         return self.__class__(prop)
+
+    def __contains__(self, item: str):
+        prop = udm_get_property(self._prop_p, item.encode('utf8'))
+        return prop is not None and prop != 0
+
+    def get(self, item: str, default: Any = None):
+        if item in self:
+            return self[item]
+        return default
 
     def to_string(self, default: str = ''):
         return udm_read_property_string(self._prop_p, nullptr, default.encode('utf8')).decode('utf8')

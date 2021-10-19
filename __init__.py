@@ -45,7 +45,10 @@ class UdmProperty(BasicUdmProperty):
         elif UdmType.Int8 <= self.array_type <= UdmType.Mat3x4 or UdmType.Half <= self.type <= UdmType.Vector4i:
             base_type, item_count = udm_to_np[self.array_type]
             array_len = len(self)
-            array = np.zeros((array_len, item_count), dtype=base_type)
+            if item_count > 1:
+                array = np.zeros((array_len, item_count), dtype=base_type)
+            else:
+                array = np.zeros((array_len,), dtype=base_type)
             array_bytesize = array_len * item_count * array.itemsize
             self._read_array_value(array.ctypes.data, self.array_type, array_bytesize, array_len)
             return array
@@ -97,7 +100,7 @@ class UDM:
         return data is not None
 
     def load(self, filename: Union[str, Path], clear_on_destroy: bool = True) -> bool:
-        data = udm_load(filename.encode('utf8'), clear_on_destroy)
+        data = udm_load(str(filename).encode('utf8'), clear_on_destroy)
         self._udm_data = ctypes.c_void_p(data)
         return data is not None
 
