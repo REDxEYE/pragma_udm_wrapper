@@ -12,7 +12,10 @@ import numpy as np
 class UdmProperty(BasicUdmProperty):
 
     def __getitem__(self, item) -> 'UdmProperty':
-        return typing.cast(UdmProperty, super().__getitem__(item))
+        prop = typing.cast(UdmProperty, super().__getitem__(item))
+        if prop.type != UdmType.Array or prop.type != UdmType.Element:
+            return prop.get_value()
+        return prop
 
     def _read_value(self, buffer, item_type: UdmType, byte_size: int):
         return udm_read_property(self._prop_p, nullptr, item_type, buffer, byte_size)
@@ -22,7 +25,9 @@ class UdmProperty(BasicUdmProperty):
 
     def _get_value(self):
         if UdmType.String <= self.type <= UdmType.Utf8String:
-            value = udm_read_property_string(self._prop_p, nullptr, b'')
+            value = udm_read_property_string(self._prop_p, nullptr, b'\xBA\xAD\xF0\x0D')
+            if value == b'\xBA\xAD\xF0\x0D':
+                raise RuntimeError(f'Failed to read string from "{self.path}"!')
             return value.decode('utf-8')
         elif UdmType.Int8 <= self.type <= UdmType.Boolean:
             base_type = udm_type_to_ctypes[self.type]
