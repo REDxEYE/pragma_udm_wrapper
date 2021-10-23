@@ -38,7 +38,9 @@ runs:
     - name: Run tests
       shell: bash
       run: |
-        python pragma_udm_wrapper/tests/basic.py
+        echo "PWD: $PWD";
+        ls -R
+        python ./pragma_udm_wrapper/tests/basic.py
             
     - name: Build submodule - udm
       uses: Silverlan/util_udm/github_actions/build@master
