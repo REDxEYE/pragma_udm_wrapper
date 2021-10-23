@@ -3,7 +3,6 @@ import json
 import typing
 from typing import Union, Optional, List, Dict, Tuple
 
-from pragma_udm_wrapper import UDM
 from .basic_property import BasicUdmProperty
 from .type_info import udm_to_np, udm_type_to_ctypes
 from .wrapper import *
