@@ -47,19 +47,8 @@ jobs:
           
       - name: Upload binaries
         uses: Silverlan/common_actions/upload_build_binaries@main
+          
+      - name: Generate Package
+        id: generate-package
+        uses: Silverlan/pragma_udm_wrapper/github_actions/generate_package@actions
         
-      - name: Prepare release package
-        shell: bash
-        run: |
-          # remove unwanted files
-          rm -rf ./pragma_udm_wrapper/tests
-          rm -rf ./pragma_udm_wrapper/.github
-          rm -rf ./pragma_udm_wrapper/github_actions
-          rm -rf ./pragma_udm_wrapper/README.MD
-          rm -rf ./pragma_udm_wrapper/.gitignore
-      - uses: actions/upload-artifact@v2.2.4
-        with:
-          name: pragma_udm_wrapper
-          retention-days: 30
-          path: |
-            ./pragma_udm_wrapper*
