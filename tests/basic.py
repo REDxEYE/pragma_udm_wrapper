@@ -4,8 +4,8 @@ from pragma_udm_wrapper import UDM, UdmType
 if __name__ == '__main__':
     udm = UDM()
     path = str(Path.cwd()) +'/tests/test_material_ascii.pmat'
-    if not udm.load():
-        print 'Failed to load UDM file ' +path +'!'
+    if not udm.load(path):
+        print('Failed to load UDM file ' +path +'!')
         sys.exit(1)
         
     root = udm.root
