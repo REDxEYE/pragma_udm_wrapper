@@ -1,4 +1,4 @@
-from pragma_udm_wrapper import UDM, UdmType
+from ../ import UDM, UdmType
 
 if __name__ == '__main__':
     udm = UDM()
