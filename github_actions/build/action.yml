@@ -30,6 +30,13 @@ runs:
             repo_name: 'io_pragma_engine'
             dir: 'external_libs'
             
+    - uses: actions/setup-python@v2
+      with:
+        python-version: '3.9'
+        architecture: 'x64'
+        
+    - run: python tests/basic.py
+            
     - name: Build submodule - udm
       uses: Silverlan/util_udm/github_actions/build@master
       with:
