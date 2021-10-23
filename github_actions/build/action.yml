@@ -40,7 +40,8 @@ runs:
       run: |
         echo "PWD: $PWD";
         ls -R
-        python -m "${{ inputs.root_dir }}" ./pragma_udm_wrapper/tests/basic.py
+        export PYTHONPATH="$PWD"
+        python ./pragma_udm_wrapper/tests/basic.py
             
     - name: Build submodule - udm
       uses: Silverlan/util_udm/github_actions/build@master
