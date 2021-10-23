@@ -35,7 +35,10 @@ runs:
         python-version: '3.9'
         architecture: 'x64'
         
-    - run: python tests/basic.py
+    - name: Run tests
+      shell: bash
+      run: |
+        python tests/basic.py
             
     - name: Build submodule - udm
       uses: Silverlan/util_udm/github_actions/build@master
