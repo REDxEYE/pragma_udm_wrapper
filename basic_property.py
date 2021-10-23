@@ -83,29 +83,34 @@ class BasicUdmProperty:
             return udm_get_property_child_count(self._prop_p, nullptr)
 
     def __iter__(self):
+        for _, item in self.items():
+            yield item
+
+    def items(self):
         if self.type == UdmType.Element:
             iterator = udm_create_property_child_name_iterator(self._prop_p, nullptr)
             if not iterator:
                 raise StopIteration
             name = udm_fetch_property_child_name(iterator)
             while name is not None:
-                yield self[name.decode('utf8')]
+                name_d = name.decode('utf8')
+                yield name_d, self[name_d]
                 name = udm_fetch_property_child_name(iterator)
         else:
             array_size = udm_get_array_size(self._prop_p, nullptr)
             for i in range(array_size):
                 elem = udm_get_property_i(self._prop_p, i)
                 if self.array_type == UdmType.Element:
-                    yield self.__class__(elem)
+                    yield i, self.__class__(elem)
                 else:
-                    yield elem
+                    yield i, elem
 
     @property
     def children(self):
         if (self.type == UdmType.Array or self.type == UdmType.ArrayLz4) and self.array_type == UdmType.Element:
-            return {i: elem for i, elem in enumerate(self)}
+            return {i: elem for i, elem in self.items()}
         elif self.type == UdmType.Element:
-            return {elem.name: self[elem.name] for elem in self}
+            return {name: elem for name, elem in self.items()}
         return {}
 
     def __repr__(self):
