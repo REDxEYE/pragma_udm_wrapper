@@ -3,7 +3,7 @@ from pragma_udm_wrapper import UDM, UdmType
 
 if __name__ == '__main__':
     udm = UDM()
-    if udm.load(Path.cwd() +'/tests/test_material_ascii.pmat'):
+    if udm.load(Path.cwd():str() +'/tests/test_material_ascii.pmat'):
         root = udm.root
         prop = root['materialPaths']
         print(prop)
