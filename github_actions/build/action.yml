@@ -40,6 +40,8 @@ runs:
       run: |
         echo "PWD: $PWD";
         ls -R
+        
+        python -m pip install numpy
         export PYTHONPATH="$PWD"
         python ./pragma_udm_wrapper/tests/basic.py
             
