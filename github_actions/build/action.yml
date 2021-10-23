@@ -19,6 +19,13 @@ runs:
       id: init-env
       uses: Silverlan/common_actions/set_common_env_vars@main
       
+    - name: Build submodule - udm
+      id: build-udm
+      uses: Silverlan/util_udm/github_actions/build@master
+      with:
+        root_dir: "${{ inputs.root_dir }}/external_libs/util_udm"
+        build_shared: '1'
+      
     - uses: ChristopherHX/conditional@b4a9649204f81002ec9a4ef7d4bf7d6b2ab7fa55
       name: CMake Build
       with:
@@ -41,12 +48,6 @@ runs:
         python -m pip install numpy
         export PYTHONPATH="$PWD"
         python ./pragma_udm_wrapper/tests/basic.py
-            
-    - name: Build submodule - udm
-      id: build-udm
-      uses: Silverlan/util_udm/github_actions/build@master
-      with:
-        root_dir: "${{ inputs.root_dir }}/external_libs/util_udm"
         
     - name: Install udm binary
       shell: bash
