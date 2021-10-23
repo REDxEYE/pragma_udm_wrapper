@@ -1,0 +1,20 @@
+"pbr"
+{
+	"properties"
+	{
+		$float roughness_factor 0.5
+		$float phong_shininess 2
+		$bool phong_normal_alpha 1
+		$float phong_intensity 4.899
+		"rma_info"
+		{
+			$bool requires_ao_update 1
+		}
+		$float metalness_factor 1
+	}
+	"textures"
+	{
+		$string albedo_map "models/blast_door"
+		$string rma_map "pbr/rma_neutral"
+	}
+}
