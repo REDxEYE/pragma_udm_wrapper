@@ -38,7 +38,8 @@ runs:
     - name: Run tests
       shell: bash
       run: |
-        python pragma_udm_wrapper/tests/basic.py
+        cd pragma_udm_wrapper
+        python tests/basic.py
             
     - name: Build submodule - udm
       uses: Silverlan/util_udm/github_actions/build@master
