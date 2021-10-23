@@ -38,7 +38,7 @@ jobs:
           
       - name: Build
         id: build
-        uses: Silverlan/io_pragma_engine/github_actions/build@actions
+        uses: Silverlan/pragma_udm_wrapper/github_actions/build@actions
         with:
           root_dir: "${{ env.GA_ROOT_DIR }}"
           should_checkout: "0"
