@@ -5,6 +5,8 @@ if __name__ == '__main__':
     udm = UDM()
     if udm.load(str(Path.cwd()) +'/tests/test_material_ascii.pmat'):
         root = udm.root
+        prop = root['pbr']
+        print(prop)
         prop = root['materialPaths']
         print(prop)
         prop = root['mass']
