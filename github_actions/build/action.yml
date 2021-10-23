@@ -40,12 +40,12 @@ runs:
       run: |
         echo "PWD: $PWD";
         ls -R
-        python -m "${{ env.GA_ROOT_DIR }}" ./pragma_udm_wrapper/tests/basic.py
+        python -m "${{ inputs.root_dir }}" ./pragma_udm_wrapper/tests/basic.py
             
     - name: Build submodule - udm
       uses: Silverlan/util_udm/github_actions/build@master
       with:
-        root_dir: "${{ env.GA_ROOT_DIR }}/external_libs/util_udm"
+        root_dir: "${{ inputs.root_dir }}/external_libs/util_udm"
             
     #- uses: Silverlan/common_actions/build_cmake@main
     #  name: CMake Build
