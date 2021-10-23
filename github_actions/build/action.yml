@@ -27,7 +27,7 @@ runs:
           uses: Silverlan/common_actions/get_submodule@main
           with:
             repo: 'Silverlan/io_pragma_engine'
-            repo_name: 'io_pragma_engine'
+            repo_name: 'pragma_udm_wrapper'
             dir: 'external_libs'
             
     - uses: actions/setup-python@v2
@@ -38,7 +38,7 @@ runs:
     - name: Run tests
       shell: bash
       run: |
-        python tests/basic.py
+        python pragma_udm_wrapper/tests/basic.py
             
     - name: Build submodule - udm
       uses: Silverlan/util_udm/github_actions/build@master
