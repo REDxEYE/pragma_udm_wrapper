@@ -49,10 +49,10 @@ runs:
         export PYTHONPATH="$PWD"
         python ./pragma_udm_wrapper/tests/basic.py
         
-    - name: Install udm binary
-      shell: bash
-      run: |
-        cp -p "${{ inputs.root_dir }}/external_libs/util_udm/build/RelWithDebInfo/util_udm" "./pragma_udm_wrapper/bin/util_udm.dll"
-        python -m pip install numpy
-        export PYTHONPATH="$PWD"
-        python ./pragma_udm_wrapper/tests/basic.py
+    #- name: Install udm binary
+    #  shell: bash
+    #  run: |
+    #    cp -p "${{ inputs.root_dir }}/external_libs/util_udm/build/RelWithDebInfo/util_udm" "./pragma_udm_wrapper/bin/util_udm.dll"
+    #    python -m pip install numpy
+    #    export PYTHONPATH="$PWD"
+    #    python ./pragma_udm_wrapper/tests/basic.py
