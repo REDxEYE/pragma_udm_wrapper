@@ -11,7 +11,7 @@ inputs:
   dir:
     description: 'Library directory'
     required: true
-    default: 'external_libs/io_pragma_engine'
+    default: 'pragma_udm_wrapper'
 runs:
   using: "composite"
   steps:
@@ -26,37 +26,32 @@ runs:
         step: |
           uses: Silverlan/common_actions/get_submodule@main
           with:
-            repo: 'Silverlan/io_pragma_engine'
+            repo: 'REDxEYE/io_pragma_engine'
             repo_name: 'pragma_udm_wrapper'
-            dir: 'external_libs'
+            dir: ${{ env.dir }}
             
     - uses: actions/setup-python@v2
       with:
         python-version: '3.9'
         architecture: 'x64'
         
-    - name: Run tests
+    - name: Run python tests
       shell: bash
       run: |
-        echo "PWD: $PWD";
-        ls -R
-        
         python -m pip install numpy
         export PYTHONPATH="$PWD"
         python ./pragma_udm_wrapper/tests/basic.py
             
     - name: Build submodule - udm
+      id: build-udm
       uses: Silverlan/util_udm/github_actions/build@master
       with:
         root_dir: "${{ inputs.root_dir }}/external_libs/util_udm"
-            
-    #- uses: Silverlan/common_actions/build_cmake@main
-    #  name: CMake Build
-    #  with:
-    #    build_type: ${{ matrix.config.build_type }}
-    #    build_generator: ${{ matrix.config.generators }}
-    #    cmake_var: 'DEPENDENCY_MATHUTIL_LIBRARY'
-    #    build_target: mathutil
-    #    build_dir: '${{ matrix.config.build_dir }}/${{ inputs.dir }}'
-    #    cmake_script_location: '${{ inputs.dir }}'
         
+    - name: Install udm binary
+      shell: bash
+      run: |
+        cp -p "${{ inputs.root_dir }}/external_libs/util_udm/build/RelWithDebInfo/util_udm" "./pragma_udm_wrapper/bin/util_udm.dll"
+        python -m pip install numpy
+        export PYTHONPATH="$PWD"
+        python ./pragma_udm_wrapper/tests/basic.py
