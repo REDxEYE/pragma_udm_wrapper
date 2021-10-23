@@ -12,23 +12,17 @@ if __name__ == '__main__':
     root = udm.root
     prop = root['pbr']
     print(prop)
-    prop = root['materialPaths']
+    
+    prop = root['pbr/properties']
     print(prop)
-    prop = root['mass']
+    
+    prop = root['pbr/properties/roughness_factor']
     print(prop)
-    prop = root['eyeOffset']
+    
+    prop = root['pbr/properties/rma_info/requires_ao_update']
     print(prop)
-    prop = root['materials']
-    print(prop)
-    prop = root['skins[0]/materials']
-    print(prop)
-    prop = root['skeleton/assetData/bones/ValveBiped.Bip01_Pelvis/pose']
-    print(prop)
-    prop = root['collisionMeshes[0]/assetData/vertices']
-    print(prop)
-    prop = root['meshGroups/eli_reference/meshes[0]/subMeshes[0]/assetData/vertices']
-    print(prop)
-    prop = root['meshGroups/eli_reference/meshes[0]/subMeshes[0]/assetType']
+    
+    prop = root['pbr/textures/albedo_map']
     print(prop)
 
     udm.destroy()
