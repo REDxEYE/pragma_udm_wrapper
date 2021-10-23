@@ -27,6 +27,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           submodules: true
+          path: 'pragma_udm_wrapper'
 
       - name: Setup
         id: setup
