@@ -25,6 +25,14 @@ runs:
       with:
         root_dir: "${{ inputs.root_dir }}/external_libs/util_udm"
         build_shared: '1'
+        
+    - name: Copy binary to bin
+      shell: bash
+      run: |
+        binaryFilePath="${{ steps.build-udm.outputs.binary_file_path }}"
+        binaryFileName=$(basename $binaryFilePath)
+        unalias cp
+        \cp -rf "$binaryFilePath" "pragma_udm_wrapper/bin/$binaryFileName"
       
     - uses: ChristopherHX/conditional@b4a9649204f81002ec9a4ef7d4bf7d6b2ab7fa55
       name: CMake Build
