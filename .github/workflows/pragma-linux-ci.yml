@@ -38,7 +38,7 @@ jobs:
           
       - name: Build
         id: build
-        uses: Silverlan/pragma_udm_wrapper/github_actions/build@actions
+        uses: REDxEYE/pragma_udm_wrapper/github_actions/build@master
         with:
           root_dir: "${{ env.GA_ROOT_DIR }}"
           should_checkout: "0"
@@ -49,4 +49,4 @@ jobs:
           
       - name: Generate Package
         id: generate-package
-        uses: Silverlan/pragma_udm_wrapper/github_actions/generate_package@actions
+        uses: REDxEYE/pragma_udm_wrapper/github_actions/generate_package@master
