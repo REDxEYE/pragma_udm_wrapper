@@ -20,12 +20,7 @@ runs:
       uses: Silverlan/common_actions/set_common_env_vars@main
       
       
-    - name: Copy binary to bin
-      shell: bash
-      run: |
-        binaryFilePath="${{ steps.build-udm.outputs.binary_file_path }}"
-        binaryFileName=$(basename $binaryFilePath)
-        \cp -rf "$binaryFilePath" "pragma_udm_wrapper/bin/$binaryFileName"
+      
       
     - name: Run python tests
       shell: bash
