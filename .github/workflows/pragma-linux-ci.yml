@@ -16,7 +16,7 @@ jobs:
           - os: ubuntu-latest
             name: "Ubuntu GCC-11"
             artifact: "ubuntu_gcc.7z"
-            build_type: "RelWithDebInfo"
+            build_type: "Release"
             cc: "gcc-11"
             cxx: "g++-11"
             archiver: "7z a"
