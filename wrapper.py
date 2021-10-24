@@ -17,8 +17,8 @@ current_path = Path(__file__).parent
 nullptr = ctypes.c_char_p(0)
 
 
-def pointer_to_array(pointer, size, type=ctypes.c_ubyte):
-    return ctypes.cast(pointer, ctypes.POINTER(type * size))
+def pointer_to_array(pointer, size, ctype=ctypes.c_ubyte):
+    return ctypes.cast(pointer, ctypes.POINTER(ctype * size))
 
 
 def load_library() -> Optional[ctypes.CDLL]:
