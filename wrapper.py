@@ -25,7 +25,7 @@ def load_library() -> Optional[ctypes.CDLL]:
     if platform == 'win32' and architecture()[0] == '64bit':
         return ctypes.WinDLL((current_path / 'bin' / 'util_udm.dll').as_posix())
     elif platform == 'linux' and architecture()[0] == '64bit':
-        return cdll.LoadLibrary((current_path / 'bin' / 'libutil_udm.so').as_posix())
+        return ctypes.CDLL((current_path / 'bin' / 'libutil_udm.so').as_posix())
     else:
         raise UnsupportedPlatform(f"Platform {platform}:{architecture()[0]} is not supported")
 
