@@ -4,7 +4,7 @@ from pragma_udm_wrapper import UDM, UdmType
 
 if __name__ == '__main__':
     udm = UDM()
-    path = Path.cwd() / '/pragma_udm_wrapper/tests/test_material_ascii.pmat'
+    path = Path.cwd() / 'pragma_udm_wrapper/tests/test_material_ascii.pmat'
     if not udm.load(path):
         print(f'Failed to load UDM file {path}!', file=sys.stderr)
         sys.exit(1)
