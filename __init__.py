@@ -16,7 +16,7 @@ class UdmProperty(BasicUdmProperty):
     def set_return_mode(cls, return_value):
         cls._return_value_on_lookup = return_value
 
-    def __getitem__(self, item) -> 'UdmProperty':
+    def __getitem__(self, item) -> Union['UdmProperty', typing.Any]:
         prop = typing.cast(UdmProperty, super().__getitem__(item))
         if (prop.type != UdmType.Array or prop.type != UdmType.Element) and self._return_value_on_lookup:
             return prop.get_value()
