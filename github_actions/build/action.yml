@@ -1,0 +1,60 @@
+name: Build
+description: 'Build library'
+inputs:
+  root_dir:
+    description: 'Root directory'
+    required: true
+  should_checkout:
+    description: 'Checkout the core library?'
+    required: true
+    default: '1'
+  dir:
+    description: 'Library directory'
+    required: true
+    default: 'pragma_udm_wrapper'
+runs:
+  using: "composite"
+  steps:
+    - name: Initialize Env
+      id: init-env
+      uses: Silverlan/common_actions/set_common_env_vars@main
+      
+    - name: Build submodule - udm
+      id: build-udm
+      uses: Silverlan/util_udm/github_actions/build@master
+      with:
+        root_dir: "${{ inputs.root_dir }}/external_libs/util_udm"
+        build_shared: '1'
+        
+    - name: Copy binary to bin
+      shell: bash
+      run: |
+        binaryFilePath="${{ steps.build-udm.outputs.binary_file_path }}"
+        binaryFileName=$(basename $binaryFilePath)
+        echo "Copying binary $binaryFilePath to $PWD/pragma_udm_wrapper/bin/$binaryFileName..."
+        \cp -rf "$binaryFilePath" "pragma_udm_wrapper/bin/$binaryFileName"
+        echo "Done!"
+      
+    - uses: ChristopherHX/conditional@b4a9649204f81002ec9a4ef7d4bf7d6b2ab7fa55
+      name: CMake Build
+      with:
+        if: ${{inputs.should_checkout == '1'}}
+        step: |
+          uses: Silverlan/common_actions/get_submodule@main
+          with:
+            repo: 'REDxEYE/io_pragma_engine'
+            repo_name: 'pragma_udm_wrapper'
+            dir: ${{ env.dir }}
+            
+    - uses: actions/setup-python@v2
+      with:
+        python-version: '3.9'
+        architecture: 'x64'
+        
+    - name: Run python tests
+      shell: bash
+      run: |
+        python -m pip install numpy
+        export PYTHONPATH="$PWD"
+        python ./pragma_udm_wrapper/tests/basic.py
+        

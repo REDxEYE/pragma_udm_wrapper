@@ -1,0 +1,23 @@
+name: Generate Package
+description: 'Generate release package'
+runs:
+  using: "composite"
+  steps:
+    - name: Prepare release package
+      shell: bash
+      run: |
+        # remove unwanted files
+        rm -rf ./pragma_udm_wrapper/tests
+        rm -rf ./pragma_udm_wrapper/.github
+        rm -rf ./pragma_udm_wrapper/.git
+        rm -rf ./pragma_udm_wrapper/github_actions
+        rm -rf ./pragma_udm_wrapper/README.MD
+        rm -rf ./pragma_udm_wrapper/.gitignore
+        
+    - uses: actions/upload-artifact@v2.2.4
+      with:
+        name: pragma_udm_wrapper
+        retention-days: 30
+        path: |
+          ./pragma_udm_wrapper*
+      
