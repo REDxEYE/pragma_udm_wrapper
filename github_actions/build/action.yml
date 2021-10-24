@@ -22,12 +22,12 @@ runs:
       
       
       
-    - name: Run python tests
-      shell: bash
-      run: |
-        python -m pip install numpy
-        export PYTHONPATH="$PWD"
-        python ./pragma_udm_wrapper/tests/basic.py
+    #- name: Run python tests
+    #  shell: bash
+    #  run: |
+    #    python -m pip install numpy
+    #    export PYTHONPATH="$PWD"
+    #    python ./pragma_udm_wrapper/tests/basic.py
       
       
       
