@@ -21,7 +21,7 @@ runs:
       
     - name: Build submodule - udm
       id: build-udm
-      uses: Silverlan/util_udm/github_actions/build@master
+      uses: Silverlan/util_udm/github_actions/build@actions
       with:
         root_dir: "${{ inputs.root_dir }}/external_libs/util_udm"
         build_shared: '1'
