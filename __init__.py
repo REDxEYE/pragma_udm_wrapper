@@ -126,16 +126,15 @@ class UDM:
             return udm_save_ascii(self._udm_data, Path(filename).as_posix().encode('utf8'), ascii_flags)
 
     def destroy(self) -> None:
-        if not self._udm_data:
+        if not self._udm_data or self._udm_data.value == 0:
             return
         udm_destroy_function(self._udm_data)
+        self._udm_data.value = 0
 
-    def __enter__(self, filename, clear_on_destroy=True):
-        self.load(filename, clear_on_destroy)
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        self.destroy()
+    def __del__(self):
+        if self._udm_data.value != 0:
+            self.destroy()
+            self._udm_data.value = 0
 
     @property
     def root(self) -> Optional[UdmProperty]:
