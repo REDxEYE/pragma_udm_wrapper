@@ -57,25 +57,19 @@ class BasicUdmProperty:
     def to_string(self, default: str = ''):
         return udm_read_property_string(self._prop_p, nullptr, default.encode('utf8')).decode('utf8')
 
-    # def to_dict(self):
-    #     assert self.type == UdmType.Element, f'Property {self.path} isn\'t element'
-    #     output = {}
-    #     for elem in self:
-    #         if elem.type == UdmType.Element:
-    #             output[elem.name] = elem.to_dict()
-    #         elif elem.type == UdmType.Array or elem.type == UdmType.ArrayLz4:
-    #             output[elem.name] = list(elem)
-    #     return output
-
     def to_ascii(self) -> str:
         value = udm_property_to_ascii(self._prop_p, nullptr)
         if value:
             return value.decode('utf8')
 
-    def to_json(self) -> dict:
+    def to_json(self) -> str:
         value = udm_property_to_json(self._prop_p)
         if value:
             return value.decode('utf8')
+
+    def to_dict(self):
+        import json
+        return json.loads(self.to_json())
 
     def __len__(self) -> int:
         if self.type == UdmType.Array or self.type == UdmType.ArrayLz4:
