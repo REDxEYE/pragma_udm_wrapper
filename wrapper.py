@@ -3,7 +3,7 @@ from pathlib import Path
 
 from platform import architecture
 from sys import platform
-from typing import Union, Optional
+from typing import Optional
 
 from .type_info import UdmType
 
@@ -21,48 +21,15 @@ def pointer_to_array(pointer, size, ctype=ctypes.c_ubyte):
     return ctypes.cast(pointer, ctypes.POINTER(ctype * size))
 
 
-def load_library() -> Optional[ctypes.CDLL]:
+def load_library(full_path: Optional[Path] = None) -> Optional[ctypes.CDLL]:
+    if full_path is not None and full_path.exists():
+        return ctypes.CDLL(full_path.as_posix())
     if platform == 'win32' and architecture()[0] == '64bit':
         return ctypes.WinDLL((current_path / 'bin' / 'util_udm.dll').as_posix())
     elif platform == 'linux' and architecture()[0] == '64bit':
         return ctypes.CDLL((current_path / 'bin' / 'libutil_udm.so').as_posix())
     else:
         raise UnsupportedPlatform(f"Platform {platform}:{architecture()[0]} is not supported")
-
-
-def _define_fundamental_type_functions(name, ctype):
-    read_property_function = getattr(_library, f'udm_read_property_{name}')
-    read_property_function.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctype]
-    read_property_function.restype = ctype
-
-    write_property_function = getattr(_library, f'udm_write_property_{name}')
-    write_property_function.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctype]
-    write_property_function.restype = None
-
-    # TYPE* udm_write_property_v(UdmProperty udmData,const char *path,UdmType type,uint32_t *outNumValues)
-    read_property_array_function = getattr(_library, f'udm_read_property_v{name}')
-    read_property_array_function.argtypes = [ctypes.c_void_p, ctypes.c_char_p, UdmType, ctypes.POINTER(ctypes.c_uint32)]
-    read_property_array_function.restype = ctypes.POINTER(ctype)
-
-    # bool udm_write_property_v(UdmProperty udmData,const char *path,UdmType type,TYPE *values,uint32_t numValues)
-    write_property_array_function = getattr(_library, f'udm_write_property_v{name}')
-    write_property_array_function.argtypes = [ctypes.c_void_p, ctypes.c_char_p, UdmType, ctypes.c_void_p,
-                                              ctypes.c_uint32]
-    write_property_array_function.restype = ctypes.c_bool
-
-    read_property_structure_array_function = getattr(_library, f'udm_read_property_sv{name}')
-    read_property_structure_array_function.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.c_uint32,
-                                                       ctypes.c_uint32, UdmType, ctypes.POINTER(ctypes.c_uint32)]
-    read_property_structure_array_function.restype = ctypes.POINTER(ctype)
-
-    write_property_structure_array_function = getattr(_library, f'udm_write_property_sv{name}')
-    write_property_structure_array_function.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctype]
-    write_property_structure_array_function.restype = None
-
-    return (read_property_function, write_property_function,
-            read_property_array_function, write_property_array_function,
-            read_property_structure_array_function, write_property_structure_array_function
-            )
 
 
 _library = load_library()
@@ -190,98 +157,6 @@ udm_size_of_type.restype = ctypes.c_size_t
 udm_size_of_struct = _library.udm_size_of_struct
 udm_size_of_struct.argtypes = [ctypes.c_uint32, ctypes.POINTER(ctypes.c_uint8)]
 udm_size_of_struct.restype = ctypes.c_size_t
-
-
-# noinspection PyPep8Naming
-class depricated:
-    (udm_read_property_b,
-     udm_write_property_b,
-     udm_read_array_property_b,
-     udm_write_array_property_b,
-     udm_read_structure_array_property_b,
-     udm_write_structure_array_property_b
-     ) = _define_fundamental_type_functions('b', ctypes.c_bool)
-
-    (udm_read_property_f,
-     udm_write_property_f,
-     udm_read_array_property_f,
-     udm_write_array_property_f,
-     udm_read_structure_array_property_f,
-     udm_write_structure_array_property_f,
-     ) = _define_fundamental_type_functions('f', ctypes.c_float)
-
-    (udm_read_property_d,
-     udm_write_property_d,
-     udm_read_array_property_d,
-     udm_write_array_property_d,
-     udm_read_structure_array_property_d,
-     udm_write_structure_array_property_d,
-     ) = _define_fundamental_type_functions('d', ctypes.c_double)
-
-    (udm_read_property_i8,
-     udm_write_property_i8,
-     udm_read_array_property_i8,
-     udm_write_array_property_i8,
-     udm_read_structure_array_property_i8,
-     udm_write_structure_array_property_i8,
-     ) = _define_fundamental_type_functions('i8', ctypes.c_int8)
-
-    (udm_read_property_ui8,
-     udm_write_property_ui8,
-     udm_read_array_property_ui8,
-     udm_write_array_property_ui8,
-     udm_read_structure_array_property_ui8,
-     udm_write_structure_array_property_ui8,
-     ) = _define_fundamental_type_functions('ui8', ctypes.c_uint8)
-
-    (udm_read_property_i16,
-     udm_write_property_i16,
-     udm_read_array_property_i16,
-     udm_write_array_property_i16,
-     udm_read_structure_array_property_i16,
-     udm_write_structure_array_property_i16,
-     ) = _define_fundamental_type_functions('i16', ctypes.c_int16)
-
-    (udm_read_property_ui16,
-     udm_write_property_ui16,
-     udm_read_array_property_ui16,
-     udm_write_array_property_ui16,
-     udm_read_structure_array_property_ui16,
-     udm_write_structure_array_property_ui16,
-     ) = _define_fundamental_type_functions('ui16', ctypes.c_uint16)
-
-    (udm_read_property_i,
-     udm_write_property_i,
-     udm_read_array_property_i,
-     udm_write_array_property_i,
-     udm_read_structure_array_property_i,
-     udm_write_structure_array_property_i,
-     ) = _define_fundamental_type_functions('i', ctypes.c_int32)
-
-    (udm_read_property_ui,
-     udm_write_property_ui,
-     udm_read_array_property_ui,
-     udm_write_array_property_ui,
-     udm_read_structure_array_property_ui,
-     udm_write_structure_array_property_ui,
-     ) = _define_fundamental_type_functions('ui', ctypes.c_uint32)
-
-    (udm_read_property_i64,
-     udm_write_property_i64,
-     udm_read_array_property_i64,
-     udm_write_array_property_i64,
-     udm_read_structure_array_property_i64,
-     udm_write_structure_array_property_i64,
-     ) = _define_fundamental_type_functions('i64', ctypes.c_int64)
-
-    (udm_read_property_ui64,
-     udm_write_property_ui64,
-     udm_read_array_property_ui64,
-     udm_write_array_property_ui64,
-     udm_read_structure_array_property_ui64,
-     udm_write_structure_array_property_ui64,
-     ) = _define_fundamental_type_functions('ui64', ctypes.c_uint64)
-
 
 # bool udm_read_property(UdmProperty udmData,char *path,UdmType type,void *buffer,uint32_t bufferSize);
 udm_read_property = _library.udm_read_property
