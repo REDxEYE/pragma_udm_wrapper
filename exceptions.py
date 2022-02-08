@@ -1,0 +1,3 @@
+class UDMNotLoaded(Exception):
+    pass
+
