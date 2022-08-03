@@ -74,7 +74,7 @@ class UDM:
 
 
 def _int_to_ptr(ptr, target_type):
-    return ctypes.cast(ptr,ctypes.POINTER(target_type))
+    return ctypes.cast(ptr, ctypes.POINTER(target_type))
 
 
 def pose_to_matrix(pos: Optional[npt.NDArray[np.float]] = None,
@@ -83,7 +83,7 @@ def pose_to_matrix(pos: Optional[npt.NDArray[np.float]] = None,
     if pos is None:
         pos = np.zeros(3, np.float32)
     if rot is None:
-        rot = np.zeros(4, np.float32)
+        rot = np.asarray([1, 0, 0, 0], np.float32)
     if scl is None:
         scl = np.ones(3, np.float32)
 
@@ -94,3 +94,13 @@ def pose_to_matrix(pos: Optional[npt.NDArray[np.float]] = None,
                                _int_to_ptr(scl.ctypes.data, ctypes.c_float),
                                _int_to_ptr(mat.ctypes.data, ctypes.c_float))
     return mat
+
+
+def convert_pragma_matrix(mat: np.ndarray[(4, 4), np.float32]):
+    mat = [
+        [mat[2, 0], -mat[2, 2], mat[2, 1], mat[2, 3]],
+        [mat[0, 0], -mat[0, 2], mat[0, 1], mat[0, 3]],
+        [mat[1, 0], mat[1, 2], mat[1, 1], mat[1, 3]],
+        [mat[3, 0], -mat[3, 2], mat[3, 1], mat[3, 3]]
+    ]
+    return np.asarray(mat, np.float32).T
