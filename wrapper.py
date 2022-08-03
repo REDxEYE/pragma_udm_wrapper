@@ -1,4 +1,5 @@
 import ctypes
+from enum import IntEnum
 from pathlib import Path
 
 from platform import architecture
@@ -30,6 +31,30 @@ def load_library(full_path: Optional[Path] = None) -> Optional[ctypes.CDLL]:
         return ctypes.CDLL((current_path / 'bin' / 'libutil_udm.so').as_posix())
     else:
         raise UnsupportedPlatform(f"Platform {platform}:{architecture()[0]} is not supported")
+
+
+class BlobResult(IntEnum):
+    Success = 0
+    DecompressedSizeMismatch = 1
+    InsufficientSize = 2
+    ValueTypeMismatch = 3
+    NotABlobType = 4
+    InvalidProperty = 5
+
+    @classmethod
+    def from_param(cls, value):
+        return cls(value)
+
+
+class ReadArrayPropertyResult(IntEnum):
+    Success = 0
+    NotAnArrayType = 1
+    RequestedRangeOutOfBounds = 2
+    BufferSizeDoesNotMatchExpectedSize = 3
+
+    @classmethod
+    def from_param(cls, value):
+        return cls(value)
 
 
 _library = load_library()
@@ -67,6 +92,16 @@ udm_save_binary.restype = ctypes.c_bool
 udm_save_ascii = _library.udm_save_ascii
 udm_save_ascii.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.c_uint32]
 udm_save_ascii.restype = ctypes.c_bool
+
+#  char *udm_get_asset_type(UdmData udmData)
+udm_get_asset_type = _library.udm_get_asset_type
+udm_get_asset_type.argtypes = [ctypes.c_void_p]
+udm_get_asset_type.restype = ctypes.c_char_p
+
+#  udm::Version udm_get_asset_version(UdmData udmData)
+udm_get_asset_version = _library.udm_get_asset_version
+udm_get_asset_version.argtypes = [ctypes.c_void_p]
+udm_get_asset_version.restype = ctypes.c_uint32
 
 # endregion
 
@@ -168,12 +203,12 @@ udm_write_property = _library.udm_write_property
 udm_write_property.argtypes = [ctypes.c_void_p, ctypes.c_char_p, UdmType, ctypes.c_void_p, ctypes.c_uint32]
 udm_write_property.restype = ctypes.c_bool
 
-# bool udm_read_array_property(UdmProperty udmData,char *path,UdmType type,void *buffer,
+# ReadArrayPropertyResult udm_read_array_property(UdmProperty udmData,char *path,UdmType type,void *buffer,
 #                               uint32_t bufferSize,uint32_t arrayOffset,uint32_t arraySize);
 udm_read_array_property = _library.udm_read_array_property
 udm_read_array_property.argtypes = [ctypes.c_void_p, ctypes.c_char_p, UdmType, ctypes.c_void_p,
                                     ctypes.c_uint32, ctypes.c_uint32, ctypes.c_uint32]
-udm_read_array_property.restype = ctypes.c_bool
+udm_read_array_property.restype = ReadArrayPropertyResult
 
 # bool udm_write_array_property(UdmProperty udmData,char *path,UdmType type,void *buffer,
 #                               uint32_t bufferSize,uint32_t arrayOffset,uint32_t arraySize,UdmArrayType arrayType,
@@ -203,7 +238,7 @@ udm_write_array_property_string.restype = ctypes.c_bool
 # bool udm_write_property_s(UdmProperty prop,const char *path,const char *value)
 udm_write_property_string = _library.udm_write_property_s
 udm_write_property_string.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.c_char_p]
-udm_write_property_string.restype = None
+udm_write_property_string.restype = ctypes.c_bool
 
 # char *udm_get_property_name(UdmProperty prop);
 udm_get_property_name = _library.udm_get_property_name
@@ -239,3 +274,20 @@ udm_get_struct_member_types.restype = ctypes.POINTER(ctypes.c_uint8)
 udm_get_struct_member_names = _library.udm_get_struct_member_names
 udm_get_struct_member_names.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.POINTER(ctypes.c_uint32)]
 udm_get_struct_member_names.restype = ctypes.POINTER(ctypes.c_char_p)
+
+# bool udm_get_blob_size(UdmProperty udmData,const char *path,uint64_t &outSize)
+udm_get_blob_size = _library.udm_get_blob_size
+udm_get_blob_size.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.POINTER(ctypes.c_uint64)]
+udm_get_blob_size.restype = ctypes.c_bool
+
+# udm::BlobResult udm_read_property_blob(UdmProperty prop,const char *path,uint8_t *outData,size_t outDataSize)
+udm_read_property_blob = _library.udm_read_property_blob
+udm_read_property_blob.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.POINTER(ctypes.c_uint8),
+                                   ctypes.c_uint64]
+udm_read_property_blob.restype = BlobResult
+
+# void udm_pose_to_matrix(const float pos[3],const float rot[4],const float scale[3],float *outMatrix)
+udm_pose_to_matrix = _library.udm_pose_to_matrix
+udm_pose_to_matrix.argtypes = [ctypes.POINTER(ctypes.c_float), ctypes.POINTER(ctypes.c_float),
+                               ctypes.POINTER(ctypes.c_float), ctypes.POINTER(ctypes.c_float)]
+udm_pose_to_matrix.restype = None
